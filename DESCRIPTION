@@ -1,0 +1,17 @@
+Package: modelTable
+Title: Formatted model summary tables
+Version: 0.1
+Authors@R: 
+    person(given = "Harry",
+           family = "Southworth",
+           role = c("aut", "cre"),
+           email = "harry@dataclarityconsulting.com")
+Description: Formatted model summary tables, with formatting for small p-values, and with trailing 0s
+License: GPL 3
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+SystemRequirements: GNU make
+RoxygenNote: 7.1.0
+Collate:
+    modelTable.R
