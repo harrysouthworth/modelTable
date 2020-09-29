@@ -4,11 +4,13 @@
 \alias{modelTable}
 \title{Get a nicely formatted table for including in a report}
 \usage{
-modelTable(x, ...)
+modelTable(x, fmt = "\%.4f", ...)
 }
 \arguments{
 \item{x}{A model object, such as an object returned by \code{lm}, \code{glm},
 or many others.}
+
+\item{...}{Currently unused.}
 }
 \value{
 A character matrix.
@@ -23,7 +25,8 @@ It is common to want to get a summary of a model in terms of
   (such as \code{glm}, \code{MASS::rlm}), and p-values want formatting
   (like "p < 0.0001") and trailing 0s are required for any rounded numbers.
   This small package is intended to provide a simple way of achieving this.
-  Methods are available for objects of class 'lm', 'glm', 'rlm', 'lmrob'
+  Methods are available for objects of class 'lm', 'glm', 'rlm', 'lmrob',
+  'polr' (proportion odds, as fitted by \code{MASS::polr})
 }
 \note{
 If you have factors in your model, you'll likely want to write a

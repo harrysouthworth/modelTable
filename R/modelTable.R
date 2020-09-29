@@ -15,11 +15,13 @@
 #' @note If you have factors in your model, you'll likely want to write a
 #'   simple function to sanitiize the rownames of the returned object.
 #' @return A character matrix.
+#' @export modelTable
 modelTable <- function(x, fmt = "%.4f", ...){
   UseMethod("modelTable")
 }
 
-
+#' @method modelTable rlm
+#' @export
 modelTable.rlm <- function(x, fmt = "%.4f"){
   co <- coef(summary(x))
   df <- x$df
@@ -28,14 +30,18 @@ modelTable.rlm <- function(x, fmt = "%.4f"){
   co <- cbind(co, p)
   colnames(co)[4] <- "p-value"
 
-  formatCoTable(co, fmt = fmt)
+  formatModelTable(co, fmt = fmt)
 }
 
+#' @method modelTable lmrob
+#' @export
 modelTable.lmrob <- function(x, fmt = "%.4f"){
   co <- coef(summary(x))
-  formatCoTable(co, fmt = fmt)
+  formatModelTable(co, fmt = fmt)
 }
 
+#' @method modelTable censtreg
+#' @export
 modelTable.censtreg <- function(x, fmt = "%.4f"){
   co <- coef(summary(x))[, c(1, 3)]
   df <- nrow(x$data) - nrow(co)
@@ -46,9 +52,17 @@ modelTable.censtreg <- function(x, fmt = "%.4f"){
   co <- cbind(co, tt, p)
   colnames(co)[3:4] <- c("t-value", "p-value")
 
-  formatCoTable(co, fmt = fmt)
+  formatModelTable(co, fmt = fmt)
 }
 
+#' Format a summary table from a model
+#' @param x An object summarizing a model, either a matrix or data frame.
+#' @param fmt To be passed into \code{sprtinf}, defaults to \code{fmt = "%.4f"}.
+#' @details It is assumed that the 4th column is p-values, and the function
+#'   either formats them using \code{sprintf} (as it does to other columns),
+#'   or turns them into "<0.0001".
+#' @warning "<0.0001" is hardcoded but shouldn't be.
+#' @export formatModelTable
 formatModelTable <- function(x, fmt = "%.4f"){
   rn <- rownames(x)
   cn <- colnames(x)
@@ -65,13 +79,19 @@ formatModelTable <- function(x, fmt = "%.4f"){
   x
 }
 
+#' @method modelTable glm
+#' @export
 modelTable.glm <- function(x, fmt = "%.4f"){
   x <- coef(summary(x))
-  formatCoTable(x, fmt = fmt)
+  formatModelTable(x, fmt = fmt)
 }
 
+#' @method modelTable lm
+#' @export
 modelTable.lm <- modelTable.glm
 
+#' @method modelTable polr
+#' @export
 modelTable.polr <- function(x, fmt = "%.4f"){
   s <- suppressMessages(summary(x))
   co <- coef(s)
@@ -81,5 +101,5 @@ modelTable.polr <- function(x, fmt = "%.4f"){
 
   co <- co[c((s$pc + 1):nrow(co), 1:s$pc), ]
 
-  formatCoTable(co, fmt = fmt)
+  formatModelTable(co, fmt = fmt)
 }
