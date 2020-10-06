@@ -103,3 +103,14 @@ modelTable.polr <- function(x, fmt = "%.4f"){
 
   formatModelTable(co, fmt = fmt)
 }
+
+#' @method modelTable gam
+#' @export
+modelTable.gam <- function(x, fmt = "%.4f"){
+  s <- summary(x)
+  co <- s$p.table
+  colnames(co)[4] <- "p-value"
+
+  formatModelTable(co, fmt = fmt)
+}
+
