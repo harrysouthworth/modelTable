@@ -4,11 +4,20 @@
 \alias{modelTable}
 \title{Get a nicely formatted table for including in a report}
 \usage{
-modelTable(x, fmt = "\%.4f", ...)
+modelTable(x, ci = FALSE, alpha = 0.05, fmt = "\%.4f", ...)
 }
 \arguments{
 \item{x}{A model object, such as an object returned by \code{lm}, \code{glm},
-or many others.}
+or various others.}
+
+\item{ci}{Logical, whether to return a confidence interval as well as the
+other stuff. Defaults to \code{ci = FALSE}.}
+
+\item{alpha}{Numeric, defaulting to \code{alpha = .05} and defining the
+level of the confidence interval, if \code{ci = TRUE}.}
+
+\item{fmt}{String to be passed to \code{sprintf}. Defaults to \code{fmt = "\%.4f"}
+and numbers are rounded to 4 decimal places, with trailing 0s left intact.}
 
 \item{...}{Currently unused.}
 }
@@ -26,6 +35,7 @@ It is common to want to get a summary of a model in terms of
   (like "p < 0.0001") and trailing 0s are required for any rounded numbers.
   This small package is intended to provide a simple way of achieving this.
   Methods are available for objects of class 'lm', 'glm', 'rlm', 'lmrob',
+  'gam' (from \code{mgcv::gam}),
   'polr' (proportion odds, as fitted by \code{MASS::polr})
 }
 \note{

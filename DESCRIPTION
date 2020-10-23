@@ -12,6 +12,9 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
 SystemRequirements: GNU make
+Depends: ggplot2
 RoxygenNote: 7.1.0
 Collate:
     modelTable.R
+    formatters.R
+    correlation.R
