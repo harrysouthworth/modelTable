@@ -50,10 +50,18 @@ modelTable.rlm <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 #' @method modelTable lmrob
 #' @export
 modelTable.lmrob <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
-  if (ci){
-    stop("ci functionality not yet added for lmrob")
-  }
   co <- coef(summary(x))
+  df <- x$df.residual
+
+  if (ci){
+    ts <- qt(1 - alpha / 2, df)
+    lo <- co[, 1] - ts * co[, 2]
+    hi <- co[, 1] + ts * co[, 2]
+    co <- cbind(co, lo, hi)
+    names(co)[5:6] <- c(paste0("Lower.", 1 - alpha / 2),
+                        paste0("Upper.", 1 - alpha / 2))
+  }
+
   formatModelTable(co, fmt = fmt)
 }
 
