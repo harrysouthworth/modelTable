@@ -40,5 +40,9 @@ It is common to want to get a summary of a model in terms of
 }
 \note{
 If you have factors in your model, you'll likely want to write a
-  simple function to sanitiize the rownames of the returned object.
+  simple function to sanitize the rownames of the returned object. For
+  objects of class 'glm', confint returns a profile confidence interval
+  using \code{stats?::confint.glm}. For objects of class 'censtreg', it
+  returns quantiles of the posterior distribution. For objects of class
+  'polr', it returns intervals based on a Gaussian approximation.
 }

@@ -18,12 +18,17 @@
 #'   and numbers are rounded to 4 decimal places, with trailing 0s left intact.
 #' @param ... Currently unused.
 #' @note If you have factors in your model, you'll likely want to write a
-#'   simple function to sanitiize the rownames of the returned object.
+#'   simple function to sanitize the rownames of the returned object. For
+#'   objects of class 'glm', confint returns a profile confidence interval
+#'   using \code{stats?::confint.glm}. For objects of class 'censtreg', it
+#'   returns quantiles of the posterior distribution. For objects of class
+#'   'polr', it returns intervals based on a Gaussian approximation.
 #' @return A character matrix.
 #' @export modelTable
 modelTable <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f", ...){
   UseMethod("modelTable")
 }
+
 
 #' @method modelTable rlm
 #' @export
@@ -78,12 +83,9 @@ modelTable.censtreg <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   colnames(co)[3:4] <- c("t-value", "p-value")
 
   if (ci){
-    ts <- qt(1 - alpha / 2, df)
-    lo <- co[, 1] - ts * co[, 2]
-    hi <- co[, 1] + ts * co[, 2]
-    co <- cbind(co, lo, hi)
-    names(co)[5:6] <- c(paste0("Lower.", 1 - alpha / 2),
-                        paste0("Upper.", 1 - alpha / 2))
+    probs <- c(alpha / 2, 1 - alpha / 2)
+    ci <- rstan::summary(x$model, probs = probs)$summary[1:nrow(co), 4:5]
+    co <- cbind(co, ci)
   }
 
   formatModelTable(co, fmt = fmt)
@@ -92,8 +94,14 @@ modelTable.censtreg <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 #' @method modelTable glm
 #' @export
 modelTable.glm <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
-  x <- coef(summary(x))
-  formatModelTable(x, fmt = fmt)
+  res <- coef(summary(x))
+
+  if (ci){
+    ci <- suppressMessages(confint(x, level = 1 - alpha))
+    res <- cbind(res, ci)
+  }
+
+  formatModelTable(res, fmt = fmt)
 }
 
 #' @method modelTable lm
@@ -119,12 +127,23 @@ modelTable.polr <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 
   co <- co[c((s$pc + 1):nrow(co), 1:s$pc), ]
 
+  if (ci){
+    z <- qnorm(1 - alpha / 2)
+    lo <- co[, 1] - z * co[, 2]
+    hi <- co[, 1] + z * co[, 2]
+    co <- cbind(co, cbind(lo, hi))
+  }
+
   formatModelTable(co, fmt = fmt)
 }
 
 #' @method modelTable gam
 #' @export
 modelTable.gam <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  if (ci){
+    stop("ci not implemented in modelTable for gam")
+  }
+
   s <- summary(x)
   co <- s$p.table
   colnames(co)[4] <- "p-value"
