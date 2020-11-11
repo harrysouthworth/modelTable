@@ -22,7 +22,8 @@
 #'   objects of class 'glm', confint returns a profile confidence interval
 #'   using \code{stats?::confint.glm}. For objects of class 'censtreg', it
 #'   returns quantiles of the posterior distribution. For objects of class
-#'   'polr', it returns intervals based on a Gaussian approximation.
+#'   'polr' of 'brglmFit' it returns intervals based on a Gaussian approximation.
+#'   NOTE the comments in \code{brglm::confint.brglm}.
 #' @return A character matrix.
 #' @export modelTable
 modelTable <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f", ...){
@@ -74,6 +75,7 @@ modelTable.lmrob <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 #' @export
 modelTable.censtreg <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   co <- coef(summary(x))[, c(1, 3)]
+  co <- co[-nrow(co), ]
   df <- nrow(x$data) - nrow(co)
 
   tt <- co[, 1] / co[, 2]
@@ -128,6 +130,19 @@ modelTable.polr <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   co <- co[c((s$pc + 1):nrow(co), 1:s$pc), ]
 
   if (ci){
+    z <- qnorm(1 - alpha / 2)
+    lo <- co[, 1] - z * co[, 2]
+    hi <- co[, 1] + z * co[, 2]
+    co <- cbind(co, cbind(lo, hi))
+  }
+
+  formatModelTable(co, fmt = fmt)
+}
+
+modelTable.brglmFit <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  co <- coef(summary(x))
+  colnames(co)[4] <- "p-value"
+  if(ci){
     z <- qnorm(1 - alpha / 2)
     lo <- co[, 1] - z * co[, 2]
     hi <- co[, 1] + z * co[, 2]
