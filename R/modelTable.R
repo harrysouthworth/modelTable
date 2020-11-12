@@ -166,3 +166,21 @@ modelTable.gam <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   formatModelTable(co, fmt = fmt)
 }
 
+#' @method modelTable coxph
+#' @export
+modelTable.coxph <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  co <- coef(summary(x))[, -2]
+  colnames(co)[4] <- "p-value"
+
+  if(ci){
+    z <- qnorm(1 - alpha / 2)
+    lo <- co[, 1] - z * co[, 2]
+    hi <- co[, 1] + z * co[, 2]
+    co <- cbind(co, cbind(lo, hi))
+  }
+
+  formatModelTable(co, fmt = fmt)
+}
+
+
+
