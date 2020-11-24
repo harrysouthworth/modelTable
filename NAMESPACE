@@ -2,6 +2,7 @@
 
 S3method(ggplot,correlation)
 S3method(modelTable,censtreg)
+S3method(modelTable,coxph)
 S3method(modelTable,gam)
 S3method(modelTable,glm)
 S3method(modelTable,lm)

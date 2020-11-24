@@ -155,13 +155,14 @@ modelTable.brglmFit <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 #' @method modelTable gam
 #' @export
 modelTable.gam <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
-  if (ci){
-    stop("ci not implemented in modelTable for gam")
-  }
-
   s <- summary(x)
   co <- s$p.table
   colnames(co)[4] <- "p-value"
+
+  if (ci){
+    ci <- confint.lm(x)[1:nrow(co), ]
+    co <- cbind(co, ci)
+  }
 
   formatModelTable(co, fmt = fmt)
 }

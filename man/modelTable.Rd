@@ -44,5 +44,6 @@ If you have factors in your model, you'll likely want to write a
   objects of class 'glm', confint returns a profile confidence interval
   using \code{stats?::confint.glm}. For objects of class 'censtreg', it
   returns quantiles of the posterior distribution. For objects of class
-  'polr', it returns intervals based on a Gaussian approximation.
+  'polr' of 'brglmFit' it returns intervals based on a Gaussian approximation.
+  NOTE the comments in \code{brglm::confint.brglm}.
 }
