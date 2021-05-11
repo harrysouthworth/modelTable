@@ -71,6 +71,11 @@ modelTable.lmrob <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   formatModelTable(co, fmt = fmt)
 }
 
+#' @method modelTable lmRob
+#' @export
+modelTable.lmRob <- modelTable.lmrob
+
+
 #' @method modelTable censtreg
 #' @export
 modelTable.censtreg <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
@@ -121,6 +126,9 @@ modelTable.lm <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 #' @method modelTable polr
 #' @export
 modelTable.polr <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  if (!("Hessian" %in% names(x))){
+    stop("You need to specify Hess = TRUE when fitting the model")
+  }
   s <- suppressMessages(summary(x))
   co <- coef(s)
   p <- 2 * (1 - pt(abs(co[, 3]), x$df.residual))
@@ -183,5 +191,11 @@ modelTable.coxph <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
   formatModelTable(co, fmt = fmt)
 }
 
+#' @method modelTable evmOpt
+#' @export
+modelTable.evmOpt <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  s <- summary(x)
+  co <- coef(s)
 
+}
 

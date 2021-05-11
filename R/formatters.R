@@ -7,6 +7,9 @@
 #'   or turns them into "<0.0001".
 #' @export formatModelTable
 formatModelTable <- function(x, fmt = "%.4f", NAstring = ""){
+  if (ncol(x) == 3){ ## Presumably point estimates, sd and t-values
+    formatTable(x, types = c("n", "n", "n"), fmt = fmt, NAstring = NAstring)
+  }
   if (ncol(x) == 4){
     formatTable(x, types = c("n", "n", "n", "p"), fmt = fmt, NAstring = NAstring)
   } else if (ncol(x) == 6){

@@ -13,7 +13,7 @@ LazyData: true
 NeedsCompilation: no
 SystemRequirements: GNU make
 Depends: ggplot2
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Collate:
     modelTable.R
     formatters.R
