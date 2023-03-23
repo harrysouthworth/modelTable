@@ -199,3 +199,20 @@ modelTable.evmOpt <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
 
 }
 
+#' @method modelTable gee
+#' @export
+modelTable.gee <- function(x, ci = FALSE, alpha = .05, fmt = "%.4f"){
+  co <- coef(summary(x))[, -c(2:3)]
+  p <- 2 * (1 - pnorm(abs(co[, 3])))
+  co <- cbind(co, p)
+  colnames(co)[4] <- "p-value"
+
+  if(ci){
+    z <- qnorm(1 - alpha / 2)
+    lo <- co[, 1] - z * co[, 2]
+    hi <- co[, 1] + z * co[, 2]
+    co <- cbind(co, cbind(lo, hi))
+  }
+
+  formatModelTable(co, fmt = fmt)
+}
